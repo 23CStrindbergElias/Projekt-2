@@ -1,0 +1,18 @@
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\Projekt 2.exe
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\Projekt 2.deps.json
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\Projekt 2.runtimeconfig.json
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\Projekt 2.dll
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\Projekt 2.pdb
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.AssemblyInfoInputs.cache
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.AssemblyInfo.cs
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.csproj.CoreCompileInputs.cache
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.dll
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\refint\Projekt 2.dll
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.pdb
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.genruntimeconfig.cache
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\ref\Projekt 2.dll
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\ascii.txt
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\dragon.txt
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\phoenix.txt
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\skeleton2.txt
