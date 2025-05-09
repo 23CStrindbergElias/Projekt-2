@@ -16,3 +16,4 @@ C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\a
 C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\dragon.txt
 C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\phoenix.txt
 C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\bin\Debug\net8.0\skeleton2.txt
+C:\Users\elias.strindberg\Documents\Prog1\Projekt 2\Projekt 2\obj\Debug\net8.0\Projekt 2.sourcelink.json

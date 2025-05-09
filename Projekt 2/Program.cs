@@ -43,14 +43,15 @@ bool treasurechamber = false;
 int revivecount = 0;
 
 bool success = false;
-bool Mycharacterokay = false;
 int Mycharacter = 0;
-string thisheroname = "";
-int thisherohp = 0;
-int thisheroagi = 0;
-int thisheroattack = 0;
+// string thisheroname = "";
+// int thisherohp = 0;
+// int thisheroagi = 0;
+// int thisheroattack = 0;
+Character myHero = new();
 bool canmeetmonster = false;
 string path = "";
+bool fightend = true;
 // Variabler slut
 
 
@@ -62,69 +63,15 @@ string logo = File.ReadAllText("ascii.txt");
 string dragon = File.ReadAllText("dragon.txt");
 string skeleton = File.ReadAllText("skeleton2.txt");
 string phoenix = File.ReadAllText("phoenix.txt");
-say(logo, false);
-say("Välkommen till Drakborgen! Målet med detta spel är att navigera en karta för att nå skattkammaren högst upp som representeras av ett '$'.", false);
-say("Tryck ENTER för att fortsätta", true);
+Toolbox.Say(logo, false);
+Toolbox.Say("Välkommen till Drakborgen! Målet med detta spel är att navigera en karta för att nå skattkammaren högst upp som representeras av ett '$'.", false);
+Toolbox.Say("Tryck ENTER för att fortsätta", true);
 Console.Clear();
 
-
-
-// Skriver ut karaktärernas attributes
-
-
-// Tar in input och kollar om valet är ok (siffra 0-2)
-
-while (success == false || Mycharacterokay == false)
-{
-    say(logo, false);
-    say("Välj din karaktär nedan, varje karaktär har ett bestämt hp och agility. Dessa kommer att spela roll i kommande strider.", false);
-    say("siffrorna 0, 1 och 2 motsvarar en karaktär. Välj en av dem.", false);
-    for (int i = 0; i < characters.Length; i++)
-    {
-        say(i + ": " + characters[i].Name + " Hp: " + characters[i].Hp + " Agility: " + characters[i].Agility, false);
-    }
-    string klass = Console.ReadLine();
-    success = int.TryParse(klass, out Mycharacter);
-    if (success)
-    {
-
-        if (Mycharacter < characters.Length && Mycharacter >= 0)
-        {
-            Mycharacterokay = true;
-            thisheroname = characters[Mycharacter].Name;
-            thisherohp = characters[Mycharacter].Hp;
-            thisheroagi = characters[Mycharacter].Agility;
-            thisheroattack = characters[Mycharacter].Attack;
-            say("Du valde " + thisheroname + ".", false);
-            say("Tryck ENTER för att börja spela.", false);
-            Console.ReadLine();
-        }
-        else
-        {
-            say("Du får bara skriva siffror mellan 0-2!", false);
-            say("Tryck ENTER för att försöka igen.", true);
-        }
-
-    }
-    else
-    {
-        say("Du får bara skriva siffror mellan 0-2!", false);
-        say("Tryck ENTER för att försöka igen.", true);
-    }
-    Console.Clear();
-
-}
-// Input koll slut
-
-// Startsida slut
+myHero = Toolbox.Choosecharacter(characters, logo);
 
 
 // walkaround start
-
-
-// KOM IHÅG: NÄR MAN SKRIVER NÅGOT ANNAT NÄR MAN GÅR OMKRING KRASCHAR SPELET. FIXA!!
-
-
 
 // Här börjar koden där man går omkring i själva slottet, spelets kod.
 while (insidedunegon == true)
@@ -132,15 +79,13 @@ while (insidedunegon == true)
     while (walkarounddone == false)
     {
         Console.Clear();
-        say(logo, false);
+        Toolbox.Say(logo, false);
         // Ritar kartan
         DrawMap(map, heroX, heroY, roomtype);
         // beskriver rummet med en slumpmässig beskrivning som ligger i en array, beskrivningen bestäms av ett slumpat tal, talet som bestäms är lika med en plats i en array som innehåller en beskrivning.
         Random rnd = new Random();
         int describe = rnd.Next(0, descriptions.GetLength(0));
-        say(descriptions[describe], false);
-
-
+        Toolbox.Say(descriptions[describe], false);
 
         int random = 0;
         if (canmeetmonster == true)
@@ -152,110 +97,76 @@ while (insidedunegon == true)
         // Om du inte mött ett monster så frågas du vilket håll du vill gå åt.
         if (random != 1)
         {
-            say("Skriv vilket håll du vill gå åt: (up, down, left or right)", false);
+            Toolbox.Say("Skriv vilket håll du vill gå åt: (up, down, left or right)", false);
         }
+
+
 
         // Om variablen är lika med 1 så slummpas ett monster fram. Talet ger återigen en plats i en array med mtvå monster och deras attributes
         if (random == 1)
         {
-            int randommonster = Random.Shared.Next(0, Monsters.GetLength(0));
-            string thismonstername = Monsters[randommonster].Name;
-            // Dessa bestämmer monstrets attributes 
-            int thismonsterhp = Monsters[randommonster].Hp;
-            int thismonsteragi = Monsters[randommonster].Agility;
-            int thismonsterattack = Monsters[randommonster].Attack;
+            Console.WriteLine(fightend);
+            Console.WriteLine("innan");
 
-            say("Du mötte " + Monsters[randommonster].Name + "!", false);
-            say("Tryck på ENTER för att gå in i strid.", false);
 
-            Console.ReadLine();
-            Console.Clear();
 
-            bool fightend = false;
 
+
+            (Monsters thisMonster, fightend) = Toolbox.meetmonster(Monsters, fightend);
+
+
+
+
+
+
+            Console.WriteLine("efter");
+            Console.WriteLine(fightend);
             // Denna while loop innefattar fight-sekvensen
             while (fightend == false)
             {
                 Console.Clear();
-                say(logo, false);
-                if (thismonstername == "Skelett")
+                Toolbox.Say(logo, false);
+                if (thisMonster.Name == "Skelett")
                 {
-                    say(skeleton, false);
+                    Toolbox.Say(skeleton, false);
                 }
                 string action = "";
 
-                say("Vad vill du göra? (Skriv 'Attack' för att försöka göra skada på monstret, eller skriv 'Flee' för att försöka fly.)", false);
-                say("Du har " + thisherohp + " HP och " + thismonstername + " har " + thismonsterhp + " HP!", false);
+                Toolbox.Say("Vad vill du göra? (Skriv 'Attack' för att försöka göra skada på monstret, eller skriv 'Flee' för att försöka fly.)", false);
+                Toolbox.Say("Du har " + myHero.Hp + " HP och " + thisMonster.Name + " har " + thisMonster.Hp + " HP!", false);
                 action = Console.ReadLine();
                 // Action motsvarar ditt val, väljer du att attackera eller fly?
                 switch (action)
                 {
                     case "Attack":
 
-                        // 50/50 om du träffar motståndaren eller inte
-                        int hitchance = rnd.Next(0, 1 + thismonsteragi);
-                        if (hitchance < 2)
-                        {
+                        // När du attackerar ska även monstret kunna slå tillbaka
+                        (thisMonster.Hp, canmeetmonster, fightend, myHero.Hp) = Fight.Hello(myHero, thisMonster, canmeetmonster, fightend);
 
-                            thismonsterhp -= thisheroattack;
-                            say("Du gjorde " + thisheroattack + " skada!", false);
-                            say("Tryck ENTER för att fortsätta striden.", false);
-                            Console.ReadLine();
-                        }
-                        if (hitchance >= 2)
-                        {
-                            say("Du missade din attack!", false);
-                            say("Tryck ENTER för att fortsätta striden.", false);
-                            Console.ReadLine();
+                        // Om du dör
+                        
 
-                        }
-                        if (thismonsterhp <= 0)
-                        {
-                            canmeetmonster = false;
-                            thismonsterhp = 0;
-                            say("Monstret dog!", false);
-                            say("Tryck ENTER för att återgå till att röra dig fritt i slottet igen.", false);
-                            fightend = true;
-                        }
-                        // Så länge monstret lever så har den en chans att slå tillbaks
-                        if (thismonsterhp > 0)
-                        {
-                            // Räknar ut nytt Hero-HP efter fienden slagit tillbaks.
-                            thisherohp = monsterattack(thisheroagi, thisherohp, thismonsterattack, thismonstername);
-                        }
-                        // Om du dör:
-                        if (thisherohp < 0)
-                        {
-                            say(logo, false);
-                            say("Du dog!", false);
-                            fightend = true;
-                            walkarounddone = true;
-                            insidedunegon = false;
-                            say("Tryck på ENTER för att avsluta:", false);
-                        }
                         break;
-
-                    // Om du försöker fly
                     case "Flee":
-                        int fleechance = rnd.Next(0, thismonsteragi);
-                        if (fleechance == 0)
-                        {
-                            say("Du lyckades fly!", false);
-                            canmeetmonster = false;
-                            fightend = true;
-                        }
-                        else
-                        {
-                            say("Din flykt misslyckades!", false);
-                            // Monster attack nedan: Finns till för att monstret ska kunna attackera när du försöker att fly
-                            thisherohp = monsterattack(thisheroagi, thisherohp, thismonsterattack, thismonstername);
-                        }
+
+                        // Om du försöker fly
+                        (canmeetmonster, fightend, myHero.Hp) = Fight.Flee(myHero, thisMonster, canmeetmonster, fightend);
+
+                        
+
                         break;
                     default:
                         break;
                 }
+                if (myHero.Hp == 0)
+                {
+                    (fightend, walkarounddone, insidedunegon) = Fight.HeroDead(logo, fightend, walkarounddone, insidedunegon, myHero.Hp);
+                }
             }
         }
+
+
+
 
         path = Console.ReadLine();
 
@@ -268,12 +179,12 @@ while (insidedunegon == true)
                 {
                     heroX--;
                     canmeetmonster = true;
-                    say("Du gick upp.", false);
-                    say("Tryck ENTER för att gå in i rummet.", true);
+                    Toolbox.Say("Du gick upp.", false);
+                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
                 }
                 else
                 {
-                    say("Du kan inte gå åt det hållet, testa ett annat!", true);
+                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
                 }
                 break;
             case "left":
@@ -283,12 +194,12 @@ while (insidedunegon == true)
                 {
                     heroY--;
                     canmeetmonster = true;
-                    say("Du gick till vänster.", false);
-                    say("Tryck ENTER för att gå in i rummet.", true);
+                    Toolbox.Say("Du gick till vänster.", false);
+                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
                 }
                 else
                 {
-                    say("Du kan inte gå åt det hållet, testa ett annat!", true);
+                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
                 }
                 break;
             case "right":
@@ -296,12 +207,12 @@ while (insidedunegon == true)
                 {
                     heroY++;
                     canmeetmonster = true;
-                    say("Du gick till höger.", false);
-                    say("Tryck ENTER för att gå in i rummet.", true);
+                    Toolbox.Say("Du gick till höger.", false);
+                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
                 }
                 else
                 {
-                    say("Du kan inte gå åt det hållet, testa ett annat!", true);
+                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
                 }
                 break;
             case "down":
@@ -310,13 +221,13 @@ while (insidedunegon == true)
                 {
                     heroX++;
                     canmeetmonster = true;
-                    say("Du gick nedåt.", false);
-                    say("Tryck ENTER för att gå in i rummet.", true);
+                    Toolbox.Say("Du gick nedåt.", false);
+                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
                 }
                 else
                 {
-                    say("Du kan inte gå åt det hållet, testa ett annat!", false);
-                    say("Tryck ENTER för att försöka igen.", true);
+                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", false);
+                    Toolbox.Say("Tryck ENTER för att försöka igen.", true);
                 }
                 break;
             // Om man inte orkar gå manuellt till skattkammaren så kan man skriva in "skip" som input in i stringen "path" för att direkt nå slutet
@@ -331,7 +242,7 @@ while (insidedunegon == true)
                     walkarounddone = true;
                     insidedunegon = false;
                     Console.Clear();
-                    say("Tryck på RETURN för att avsluta", true);
+                    Toolbox.Say("Tryck på RETURN för att avsluta", true);
                 }
                 break;
             default:
@@ -346,21 +257,20 @@ while (insidedunegon == true)
             canmeetmonster = false;
             Console.Clear();
         }
-
         // Koden för självaste skattkammaren
 
         Console.Clear();
-        int hasshowedintro =0;
+        int hasshowedintro = 0;
         while (treasurechamber == true)
         {
             if (hasshowedintro == 0)
             {
-                say("Välkommen till skattkammaren. Här kommer du att dra så kallade skattkort i hopp om att samla på dig rikedommar.", false);
-                say("Dock bör du vara varsam. En drake sover i närheten, och med varje skattkort som dras ökar chansen att draken vaknar och dödar dig!", false);
-                say("Tryck på ENTER för att börja dra skattkort.", true);
+                Toolbox.Say("Välkommen till skattkammaren. Här kommer du att dra så kallade skattkort i hopp om att samla på dig rikedommar.", false);
+                Toolbox.Say("Dock bör du vara varsam. En drake sover i närheten, och med varje skattkort som dras ökar chansen att draken vaknar och dödar dig!", false);
+                Toolbox.Say("Tryck på ENTER för att börja dra skattkort.", true);
                 hasshowedintro++;
             }
-            say("Tryck 1 för att dra ett skatt-kort, tryck 2 för att gå ut ur skattkammaren.", false);
+            Toolbox.Say("Tryck 1 för att dra ett skatt-kort, tryck 2 för att gå ut ur skattkammaren.", false);
             string s = Console.ReadLine();
 
             bool lyckad = int.TryParse(s, out int i);
@@ -372,14 +282,14 @@ while (insidedunegon == true)
                 {
                     // Lägger ihop totala värdet av allt du snattat åt dig, värdet sparas även om du går in och ut ur skattkammaren genom att klicka 2
                     totalgold += Skattkort();
-                    say("Det du samlat på dig har ett värd på totalt " + totalgold + " coins", false);
+                    Toolbox.Say("Det du samlat på dig har ett värd på totalt " + totalgold + " coins", false);
                     ROUNDS++;
-                    say("Du har varit i skattkammaren i " + ROUNDS + " rundor.", false);
-                    say("Tryck på ENTER för att fortsätta.", true);
+                    Toolbox.Say("Du har varit i skattkammaren i " + ROUNDS + " rundor.", false);
+                    Toolbox.Say("Tryck på ENTER för att fortsätta.", true);
                     if (ROUNDS == 11)
                     {
                         // Liten rekommendation, fast det händer så sällan att det nästan bör räknas som ett easter egg
-                        say("Jag skulle gå ut om jag vore du...", false);
+                        Toolbox.Say("Jag skulle gå ut om jag vore du...", false);
                     }
                     Console.Clear();
                 }
@@ -388,7 +298,7 @@ while (insidedunegon == true)
                     Console.Clear();
                     Console.WriteLine("Du dog, draken vaknade!");
                     Console.WriteLine(dragon);
-                    say("Tryck på RETURN för att avsluta", false);
+                    Toolbox.Say("Tryck på RETURN för att avsluta", false);
                     Console.ReadLine();
                     // Detta förhindrar fenix-fenomenet att hända mer än 1 gång
                     if (revivecount == 0)
@@ -397,13 +307,13 @@ while (insidedunegon == true)
                         if (revive == 9)
                         {
                             Console.Clear();
-                            say("...", false);
+                            Toolbox.Say("...", false);
                             Console.ReadLine();
-                            say("...", false);
+                            Toolbox.Say("...", false);
                             Console.ReadLine();
-                            say(phoenix, false);
-                            say("En fågel Fenix återupplivar dig! Du har en ny chans, slösa inte bort den.", false);
-                            say("Tryck ENTER för att fortsätta", false);
+                            Toolbox.Say(phoenix, false);
+                            Toolbox.Say("En fågel Fenix återupplivar dig! Du har en ny chans, slösa inte bort den.", false);
+                            Toolbox.Say("Tryck ENTER för att fortsätta", false);
                             ROUNDS = 0;
                             Console.ReadLine();
                             Console.Clear();
@@ -449,38 +359,37 @@ static int monsterattack(int thisheroagi, int thisherohp, int thismonsterattack,
     if (enemyhitchance < 2)
     {
         thisherohp -= thismonsterattack;
-        say("" + thismonstername + " gjorde " + thismonsterattack + " skada på dig!", false);
-        say("Tryck ENTER för att fortsätta striden.", false);
+        Toolbox.Say("" + thismonstername + " gjorde " + thismonsterattack + " skada på dig!", false);
+        Toolbox.Say("Tryck ENTER för att fortsätta striden.", false);
         Console.ReadLine();
         Console.Clear();
     }
     else
     {
-        say("Monstret träffar dig inte.", false);
-        say("Tryck ENTER för att fortsätta striden.", false);
+        Toolbox.Say("Monstret träffar dig inte.", false);
+        Toolbox.Say("Tryck ENTER för att fortsätta striden.", false);
         Console.ReadLine();
         Console.Clear();
     }
     return thisherohp;
-
 }
 
-static void say(string what2say, bool shouldIwait)
-{
-    Console.WriteLine(what2say);
-    if (shouldIwait)
-    {
-        Console.ReadLine();
-    }
+// static void Toolbox.Say(string what2say, bool shouldIwait)
+// {
+//     Console.WriteLine(what2say);
+//     if (shouldIwait)
+//     {
+//         Console.ReadLine();
+//     }
 
-}
+// }
 
 static void DrawMap(int[,] map, int heroX, int heroY, string[] roomtype)
 {
     int slask = 0;
     for (int x = 0; x < map.GetLength(1); x++)
     {
-        say("", false);
+        Toolbox.Say("", false);
         for (int y = 0; y < map.GetLength(0); y++)
         {
             slask = map[x, y];
@@ -516,7 +425,7 @@ static int Skattkort()
         bool success = int.TryParse(Skatter[trash, 1], out thisvalue);
         thisthing = Skatter[trash, 0];
     }
-    say("Du hittade " + thisthing + " till ett värde av " + thisvalue + " coins.", false);
+    Toolbox.Say("Du hittade " + thisthing + " till ett värde av " + thisvalue + " coins.", false);
     return thisvalue;
 }
 
@@ -532,7 +441,7 @@ static int Drakkort(int Rundor, int totalcards)
     }
     else
     {
-        say("Draken fortsätter att sova.", false);
+        Toolbox.Say("Draken fortsätter att sova.", false);
         Alive = 1;
     }
     return Alive;
@@ -543,7 +452,7 @@ static int Drakkort(int Rundor, int totalcards)
 
 // Klasser början
 
-class Character
+public class Character
 {
     public string Name;
     public int Hp;
@@ -551,7 +460,7 @@ class Character
     public int Attack;
 }
 
-class Monsters
+public class Monsters
 {
     public string Name;
     public int Hp;
