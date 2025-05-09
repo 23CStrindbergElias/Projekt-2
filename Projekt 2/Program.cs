@@ -105,22 +105,9 @@ while (insidedunegon == true)
         // Om variablen är lika med 1 så slummpas ett monster fram. Talet ger återigen en plats i en array med mtvå monster och deras attributes
         if (random == 1)
         {
-            Console.WriteLine(fightend);
-            Console.WriteLine("innan");
-
-
-
-
 
             (Monsters thisMonster, fightend) = Toolbox.meetmonster(Monsters, fightend);
 
-
-
-
-
-
-            Console.WriteLine("efter");
-            Console.WriteLine(fightend);
             // Denna while loop innefattar fight-sekvensen
             while (fightend == false)
             {
@@ -164,8 +151,6 @@ while (insidedunegon == true)
                 }
             }
         }
-
-
 
 
         path = Console.ReadLine();
@@ -351,38 +336,6 @@ while (insidedunegon == true)
 
 
 // Metoder början
-
-static int monsterattack(int thisheroagi, int thisherohp, int thismonsterattack, string thismonstername)
-{
-    Random rnd = new Random();
-    int enemyhitchance = rnd.Next(0, 2 + thisheroagi);
-    if (enemyhitchance < 2)
-    {
-        thisherohp -= thismonsterattack;
-        Toolbox.Say("" + thismonstername + " gjorde " + thismonsterattack + " skada på dig!", false);
-        Toolbox.Say("Tryck ENTER för att fortsätta striden.", false);
-        Console.ReadLine();
-        Console.Clear();
-    }
-    else
-    {
-        Toolbox.Say("Monstret träffar dig inte.", false);
-        Toolbox.Say("Tryck ENTER för att fortsätta striden.", false);
-        Console.ReadLine();
-        Console.Clear();
-    }
-    return thisherohp;
-}
-
-// static void Toolbox.Say(string what2say, bool shouldIwait)
-// {
-//     Console.WriteLine(what2say);
-//     if (shouldIwait)
-//     {
-//         Console.ReadLine();
-//     }
-
-// }
 
 static void DrawMap(int[,] map, int heroX, int heroY, string[] roomtype)
 {
