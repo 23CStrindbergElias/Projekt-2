@@ -1,6 +1,9 @@
 ﻿// Variabler start
 
 // Varje karaktär har ett bestämt värde för: HP, Agility och Attack.
+using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
+
 Character[] characters = {
     new() {Name = "Riddare", Hp = 30, Agility = 1, Attack = 7},
     new() {Name = "Samurai", Hp = 20, Agility = 2, Attack = 5},
@@ -41,13 +44,8 @@ int totalgold = 0;
 bool insidedunegon = true;
 bool treasurechamber = false;
 int revivecount = 0;
-
 bool success = false;
 int Mycharacter = 0;
-// string thisheroname = "";
-// int thisherohp = 0;
-// int thisheroagi = 0;
-// int thisheroattack = 0;
 Character myHero = new();
 bool canmeetmonster = false;
 string path = "";
@@ -81,7 +79,7 @@ while (insidedunegon == true)
         Console.Clear();
         Toolbox.Say(logo, false);
         // Ritar kartan
-        DrawMap(map, heroX, heroY, roomtype);
+        Toolbox.DrawMap(map, heroX, heroY, roomtype);
         // beskriver rummet med en slumpmässig beskrivning som ligger i en array, beskrivningen bestäms av ett slumpat tal, talet som bestäms är lika med en plats i en array som innehåller en beskrivning.
         Random rnd = new Random();
         int describe = rnd.Next(0, descriptions.GetLength(0));
@@ -131,7 +129,7 @@ while (insidedunegon == true)
                         (thisMonster.Hp, canmeetmonster, fightend, myHero.Hp) = Fight.Hello(myHero, thisMonster, canmeetmonster, fightend);
 
                         // Om du dör
-                        
+
 
                         break;
                     case "Flee":
@@ -139,7 +137,7 @@ while (insidedunegon == true)
                         // Om du försöker fly
                         (canmeetmonster, fightend, myHero.Hp) = Fight.Flee(myHero, thisMonster, canmeetmonster, fightend);
 
-                        
+
 
                         break;
                     default:
@@ -227,6 +225,7 @@ while (insidedunegon == true)
                     walkarounddone = true;
                     insidedunegon = false;
                     Console.Clear();
+                    Toolbox.Say("Du fick totalt "+totalgold+" värt av coins!", false);
                     Toolbox.Say("Tryck på RETURN för att avsluta", true);
                 }
                 break;
@@ -246,6 +245,7 @@ while (insidedunegon == true)
 
         Console.Clear();
         int hasshowedintro = 0;
+        int cardsleft = 12;
         while (treasurechamber == true)
         {
             if (hasshowedintro == 0)
@@ -254,6 +254,7 @@ while (insidedunegon == true)
                 Toolbox.Say("Dock bör du vara varsam. En drake sover i närheten, och med varje skattkort som dras ökar chansen att draken vaknar och dödar dig!", false);
                 Toolbox.Say("Tryck på ENTER för att börja dra skattkort.", true);
                 hasshowedintro++;
+
             }
             Toolbox.Say("Tryck 1 för att dra ett skatt-kort, tryck 2 för att gå ut ur skattkammaren.", false);
             string s = Console.ReadLine();
@@ -261,61 +262,20 @@ while (insidedunegon == true)
             bool lyckad = int.TryParse(s, out int i);
             if (i == 1)
             {
-                int alive = Drakkort(ROUNDS, 12);
+                var temp = Toolbox.Drakkort(ROUNDS, cardsleft);
+                int Alive = temp.Item1;
+                cardsleft = temp.Item2;
 
-                if (alive != 0)
-                {
-                    // Lägger ihop totala värdet av allt du snattat åt dig, värdet sparas även om du går in och ut ur skattkammaren genom att klicka 2
-                    totalgold += Skattkort();
-                    Toolbox.Say("Det du samlat på dig har ett värd på totalt " + totalgold + " coins", false);
-                    ROUNDS++;
-                    Toolbox.Say("Du har varit i skattkammaren i " + ROUNDS + " rundor.", false);
-                    Toolbox.Say("Tryck på ENTER för att fortsätta.", true);
-                    if (ROUNDS == 11)
-                    {
-                        // Liten rekommendation, fast det händer så sällan att det nästan bör räknas som ett easter egg
-                        Toolbox.Say("Jag skulle gå ut om jag vore du...", false);
-                    }
-                    Console.Clear();
-                }
-                if (alive == 0)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Du dog, draken vaknade!");
-                    Console.WriteLine(dragon);
-                    Toolbox.Say("Tryck på RETURN för att avsluta", false);
-                    Console.ReadLine();
-                    // Detta förhindrar fenix-fenomenet att hända mer än 1 gång
-                    if (revivecount == 0)
-                    {
-                        int revive = Random.Shared.Next(0, 10);
-                        if (revive == 9)
-                        {
-                            Console.Clear();
-                            Toolbox.Say("...", false);
-                            Console.ReadLine();
-                            Toolbox.Say("...", false);
-                            Console.ReadLine();
-                            Toolbox.Say(phoenix, false);
-                            Toolbox.Say("En fågel Fenix återupplivar dig! Du har en ny chans, slösa inte bort den.", false);
-                            Toolbox.Say("Tryck ENTER för att fortsätta", false);
-                            ROUNDS = 0;
-                            Console.ReadLine();
-                            Console.Clear();
-                            revivecount++;
-                        }
-                        else
-                        {
-                            treasurechamber = false;
-                            insidedunegon = false;
-                        }
-                    }
-                    else
-                    {
-                        treasurechamber = false;
-                        insidedunegon = false;
-                    }
-                }
+                totalgold += Toolbox.Skattkort(ROUNDS);
+
+                temp = Toolbox.hero_alive(Alive, totalgold, ROUNDS);
+                totalgold = temp.Item1;
+                ROUNDS = temp.Item2;   
+
+                var temp2 = Toolbox.hero_dead(Alive, dragon, revivecount, phoenix, ROUNDS, treasurechamber, insidedunegon, walkarounddone);
+                treasurechamber = temp2.Item1;
+                insidedunegon = temp2.Item2;
+                walkarounddone = temp2.Item3;
             }
             if (i == 2)
             {
@@ -329,78 +289,7 @@ while (insidedunegon == true)
     }
 }
 
-
-
 // Walkaround slut
-
-
-
-// Metoder början
-
-static void DrawMap(int[,] map, int heroX, int heroY, string[] roomtype)
-{
-    int slask = 0;
-    for (int x = 0; x < map.GetLength(1); x++)
-    {
-        Toolbox.Say("", false);
-        for (int y = 0; y < map.GetLength(0); y++)
-        {
-            slask = map[x, y];
-            if (x == heroX && y == heroY)
-            {
-                // Ritar ut hjälterutan
-                Console.Write("×");
-            }
-            else
-            {
-                Console.Write(roomtype[slask]);
-            }
-        }
-    }
-    Console.WriteLine();
-}
-
-static int Skattkort()
-{
-    int i = Random.Shared.Next(1, 21);
-    string thisthing = "";
-    int thisvalue = 0;
-    if (i < 16)
-    {
-        // Får bara mynt
-        thisvalue = Random.Shared.Next(1, 11) * 10; thisthing = "Mynt";
-    }
-    else
-    {
-        // Vi får ett föremål. Jag valde en Array för att innehållet aldrig ändras
-        string[,] Skatter = { { "Rubin", "50" }, { "Diamant", "70" }, { "Spira", "90" }, { "Krona", "110" }, { "Guldäpple", "30" } };
-        int trash = Random.Shared.Next(0, Skatter.GetLength(0));
-        bool success = int.TryParse(Skatter[trash, 1], out thisvalue);
-        thisthing = Skatter[trash, 0];
-    }
-    Toolbox.Say("Du hittade " + thisthing + " till ett värde av " + thisvalue + " coins.", false);
-    return thisvalue;
-}
-
-static int Drakkort(int Rundor, int totalcards)
-{
-    int Alive;
-    int cardsleft = totalcards - Rundor;
-    int i = Random.Shared.Next(1, cardsleft);
-    if (i == 1)
-    {
-        // Draken vaknar
-        Alive = 0;
-    }
-    else
-    {
-        Toolbox.Say("Draken fortsätter att sova.", false);
-        Alive = 1;
-    }
-    return Alive;
-}
-
-// Metoder slut
 
 
 // Klasser början
