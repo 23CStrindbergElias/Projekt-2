@@ -50,6 +50,11 @@ Character myHero = new();
 bool canmeetmonster = false;
 string path = "";
 bool fightend = true;
+int makeitwork;
+
+
+int x_position;
+int Y_position;
 // Variabler slut
 
 
@@ -157,61 +162,56 @@ while (insidedunegon == true)
         switch (path)
         {
             case "up":
-                // int next = map[heroX - 1, heroY];
-                if (map[heroX - 1, heroY] != 0 && map[heroX - 1, heroY] != 8 && map[heroX - 1, heroY] != 4)
-                {
-                    heroX--;
-                    canmeetmonster = true;
-                    Toolbox.Say("Du gick upp.", false);
-                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
-                }
-                else
-                {
-                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
-                }
+
+                x_position = 1;
+                Y_position = 0;
+                makeitwork = 1;
+
+                var vilkethåll = Toolbox.direction(map, heroX, heroY, canmeetmonster, x_position, Y_position, makeitwork);
+                canmeetmonster = vilkethåll.Item1;
+                heroX = vilkethåll.Item2;
+                heroY = vilkethåll.Item3;
+                map = vilkethåll.Item4;
+
                 break;
             case "left":
 
-                // next = map[heroX, heroY - 1];
-                if (map[heroX, heroY - 1] != 0 && map[heroX, heroY - 1] != 6 && map[heroX, heroY - 1] != 2)
-                {
-                    heroY--;
-                    canmeetmonster = true;
-                    Toolbox.Say("Du gick till vänster.", false);
-                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
-                }
-                else
-                {
-                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
-                }
+                x_position = 0;
+                Y_position = 1;
+                makeitwork = 2;
+
+                vilkethåll = Toolbox.direction(map, heroX, heroY, canmeetmonster, x_position, Y_position, makeitwork);
+                canmeetmonster = vilkethåll.Item1;
+                heroX = vilkethåll.Item2;
+                heroY = vilkethåll.Item3;
+                map = vilkethåll.Item4;
+
                 break;
             case "right":
-                if (map[heroX, heroY + 1] != 0 && map[heroX, heroY + 1] != 4 && map[heroX, heroY + 1] != 2)
-                {
-                    heroY++;
-                    canmeetmonster = true;
-                    Toolbox.Say("Du gick till höger.", false);
-                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
-                }
-                else
-                {
-                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
-                }
+
+                x_position = 0;
+                Y_position = 1;
+                makeitwork = 3;
+
+                vilkethåll = Toolbox.direction(map, heroX, heroY, canmeetmonster, x_position, Y_position, makeitwork);
+                canmeetmonster = vilkethåll.Item1;
+                heroX = vilkethåll.Item2;
+                heroY = vilkethåll.Item3;
+                map = vilkethåll.Item4;
+
                 break;
             case "down":
-                // För att koden inte ska krascha om man skriver down i början så existerar "(heroX < map.GetLength(1)-1"
-                if (heroX < map.GetLength(1) - 1 && map[heroX + 1, heroY] != 0 && map[heroX + 1, heroY] != 6 && map[heroX + 1, heroY] != 9)
-                {
-                    heroX++;
-                    canmeetmonster = true;
-                    Toolbox.Say("Du gick nedåt.", false);
-                    Toolbox.Say("Tryck ENTER för att gå in i rummet.", true);
-                }
-                else
-                {
-                    Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", false);
-                    Toolbox.Say("Tryck ENTER för att försöka igen.", true);
-                }
+
+                x_position = 1;
+                Y_position = 0;
+                makeitwork = 4;
+
+                vilkethåll = Toolbox.direction(map, heroX, heroY, canmeetmonster, x_position, Y_position, makeitwork);
+                canmeetmonster = vilkethåll.Item1;
+                heroX = vilkethåll.Item2;
+                heroY = vilkethåll.Item3;
+                map = vilkethåll.Item4;
+
                 break;
             // Om man inte orkar gå manuellt till skattkammaren så kan man skriva in "skip" som input in i stringen "path" för att direkt nå slutet
             case "skip":
@@ -225,7 +225,7 @@ while (insidedunegon == true)
                     walkarounddone = true;
                     insidedunegon = false;
                     Console.Clear();
-                    Toolbox.Say("Du fick totalt "+totalgold+" värt av coins!", false);
+                    Toolbox.Say("Du fick totalt " + totalgold + " värt av coins!", false);
                     Toolbox.Say("Tryck på RETURN för att avsluta", true);
                 }
                 break;
@@ -270,7 +270,7 @@ while (insidedunegon == true)
 
                 temp = Toolbox.hero_alive(Alive, totalgold, ROUNDS);
                 totalgold = temp.Item1;
-                ROUNDS = temp.Item2;   
+                ROUNDS = temp.Item2;
 
                 var temp2 = Toolbox.hero_dead(Alive, dragon, revivecount, phoenix, ROUNDS, treasurechamber, insidedunegon, walkarounddone);
                 treasurechamber = temp2.Item1;

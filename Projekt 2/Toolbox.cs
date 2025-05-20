@@ -228,7 +228,44 @@ public class Toolbox
         return (treasurechamber, insidedunegon, walkarounddone);
     }
 
-
+    public static (bool, int, int, int[,]) direction(int[,] map, int heroX, int heroY, bool canmeetmonster, int x_position, int Y_position, int makeitwork)
+    {
+        int slask = 1;
+        if (map[heroX - x_position, heroY - Y_position] != 0 && map[heroX - x_position, heroY - Y_position] != 8 && map[heroX - x_position, heroY - Y_position] != 4 && x_position == 1 && Y_position == 0 && makeitwork == 1)
+        {
+            heroX--;
+            canmeetmonster = true;
+            Toolbox.Say("Du gick uppåt, tryck ENTER för att gå in i rummet.", true);
+            slask = 0 ;
+        }
+        if (map[heroX, heroY - Y_position] != 0 && map[heroX, heroY - Y_position] != 6 && map[heroX, heroY - Y_position] != 2 && x_position == 0 && Y_position == 1 && makeitwork == 2)
+        {
+            heroY--;
+            canmeetmonster = true;
+            Toolbox.Say("Du gick till vänster, tryck ENTER för att gå in i rummet.", true);
+            slask = 0 ;
+        }
+        if (map[heroX, heroY + Y_position] != 0 && map[heroX, heroY + Y_position] != 4 && map[heroX, heroY + Y_position] != 2 && map[heroX, heroY - Y_position] != 2 && x_position == 0 && Y_position == 1 && makeitwork == 3)
+        {
+            heroY++;
+            canmeetmonster = true;
+            Toolbox.Say("Du gick till höger, tryck ENTER för att gå in i rummet.", true);
+            slask = 0 ;
+        }
+        // För att koden inte ska krascha om man skriver down i början så existerar "(heroX < map.GetLength(1)-1"
+        if (heroX < map.GetLength(1) - 1 && map[heroX + x_position, heroY] != 0 && map[heroX + x_position, heroY] != 6 && map[heroX + x_position, heroY] != 9 && x_position == 1 && Y_position == 0 && makeitwork == 4)
+        {
+            heroX++;
+            canmeetmonster = true;
+            Toolbox.Say("Du gick nedåt, tryck ENTER för att gå in i rummet.", true);
+            slask = 0;
+        }
+        if (slask == 1)
+        {
+            Toolbox.Say("Du kan inte gå åt det hållet, testa ett annat!", true);
+        }
+        return (canmeetmonster, heroX, heroY, map);
+    }
 
 
 
