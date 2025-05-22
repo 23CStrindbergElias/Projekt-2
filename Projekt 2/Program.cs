@@ -1,4 +1,23 @@
-﻿// Variabler start
+﻿// Pseudo kod för drakborgen (Draken och skattkammaren)
+// Börja med att dra ett kort från skatt-korten
+// Därefter får man reda på vilket föremål man drog samt värdet på föremålet i valutan "coins"
+// Sedan ska ett kort dras från en annan hög, som då till en början innehåller 12 kort, där en av dessa kort är draken
+// Om du drar draken så dör du och du tappar alla värdeföremål, du förlorar alltså
+// Om du lyckas undvika att väcka draken så ska ett kort dras från den här högen, det kan inte vara kortet där draken vaknar
+// Efter varje runda så ska man ha möjligheten att bege sig ut från skattkammaren och så får man reda på värdet av alla sin skatter
+
+
+// Pesudo kod för vägen till skattkammaren
+// Börja med att välja din karaktär
+// Sedan har man möjligheten att gå till höger, vänster eller frammåt
+// I varje rum ska det finnas en viss chans att det spawnas ett monster, kanske ett skelett eller en orc
+
+
+
+
+
+
+// Variabler start
 
 // Varje karaktär har ett bestämt värde för: HP, Agility och Attack.
 using System.Net.Mail;
